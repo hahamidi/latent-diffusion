@@ -556,7 +556,7 @@ if __name__ == "__main__":
                 }
             },
         }
-        default_logger_cfg = default_logger_cfgs["testtube"]
+        default_logger_cfg = default_logger_cfgs["wandb"]
         if "logger" in lightning_config:
             logger_cfg = lightning_config.logger
         else:
@@ -630,7 +630,7 @@ if __name__ == "__main__":
         else:
             callbacks_cfg = OmegaConf.create()
 
-        if 'metrics_over_trainsteps_checkpoint' in callbacks_cfg:
+        if 'metrics_over_trainsteps_checkpoint' not in  callbacks_cfg:
             print(
                 'Caution: Saving checkpoints every n train steps without deleting. This might require some free space.')
             default_metrics_over_trainsteps_ckpt_dict = {
@@ -641,8 +641,9 @@ if __name__ == "__main__":
                          "filename": "{epoch:06}-{step:09}",
                          "verbose": True,
                          'save_top_k': -1,
-                         'every_n_train_steps': 10000,
+                         'every_n_train_steps': 3000,
                          'save_weights_only': True
+
                      }
                      }
             }

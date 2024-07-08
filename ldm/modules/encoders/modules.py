@@ -3,8 +3,13 @@ import torch.nn as nn
 from functools import partial
 import clip
 from einops import rearrange, repeat
+<<<<<<< HEAD
 from transformers import CLIPTokenizer, CLIPTextModel
 import kornia
+=======
+import kornia
+
+>>>>>>> origin/main
 
 from ldm.modules.x_transformer import Encoder, TransformerWrapper  # TODO: can we directly rely on lucidrains code and simply add this as a reuirement? --> test
 
@@ -134,6 +139,7 @@ class SpatialRescaler(nn.Module):
     def encode(self, x):
         return self(x)
 
+<<<<<<< HEAD
 class FrozenCLIPEmbedder(AbstractEncoder):
     """Uses the CLIP transformer encoder for text (from Hugging Face)"""
     def __init__(self, version="openai/clip-vit-large-patch14", device="cuda", max_length=77):
@@ -161,6 +167,8 @@ class FrozenCLIPEmbedder(AbstractEncoder):
     def encode(self, text):
         return self(text)
 
+=======
+>>>>>>> origin/main
 
 class FrozenCLIPTextEmbedder(nn.Module):
     """
@@ -227,8 +235,11 @@ class FrozenClipImageEmbedder(nn.Module):
         # x is assumed to be in range [-1,1]
         return self.model.encode_image(self.preprocess(x))
 
+<<<<<<< HEAD
 
 if __name__ == "__main__":
     from ldm.util import count_params
     model = FrozenCLIPEmbedder()
     count_params(model, verbose=True)
+=======
+>>>>>>> origin/main

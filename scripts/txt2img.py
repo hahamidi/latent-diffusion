@@ -1,10 +1,14 @@
 import argparse, os, sys, glob
+<<<<<<< HEAD
 import cv2
+=======
+>>>>>>> origin/main
 import torch
 import numpy as np
 from omegaconf import OmegaConf
 from PIL import Image
 from tqdm import tqdm, trange
+<<<<<<< HEAD
 from imwatermark import WatermarkEncoder
 from itertools import islice
 from einops import rearrange
@@ -13,10 +17,15 @@ import time
 from pytorch_lightning import seed_everything
 from torch import autocast
 from contextlib import contextmanager, nullcontext
+=======
+from einops import rearrange
+from torchvision.utils import make_grid
+>>>>>>> origin/main
 
 from ldm.util import instantiate_from_config
 from ldm.models.diffusion.ddim import DDIMSampler
 from ldm.models.diffusion.plms import PLMSSampler
+<<<<<<< HEAD
 from ldm.models.diffusion.dpm_solver import DPMSolverSampler
 
 from diffusers.pipelines.stable_diffusion.safety_checker import StableDiffusionSafetyChecker
@@ -44,13 +53,18 @@ def numpy_to_pil(images):
     pil_images = [Image.fromarray(image) for image in images]
 
     return pil_images
+=======
+>>>>>>> origin/main
 
 
 def load_model_from_config(config, ckpt, verbose=False):
     print(f"Loading model from {ckpt}")
     pl_sd = torch.load(ckpt, map_location="cpu")
+<<<<<<< HEAD
     if "global_step" in pl_sd:
         print(f"Global Step: {pl_sd['global_step']}")
+=======
+>>>>>>> origin/main
     sd = pl_sd["state_dict"]
     model = instantiate_from_config(config.model)
     m, u = model.load_state_dict(sd, strict=False)
@@ -66,6 +80,7 @@ def load_model_from_config(config, ckpt, verbose=False):
     return model
 
 
+<<<<<<< HEAD
 def put_watermark(img, wm_encoder=None):
     if wm_encoder is not None:
         img = cv2.cvtColor(np.array(img), cv2.COLOR_RGB2BGR)
@@ -96,6 +111,9 @@ def check_safety(x_image):
 
 
 def main():
+=======
+if __name__ == "__main__":
+>>>>>>> origin/main
     parser = argparse.ArgumentParser()
 
     parser.add_argument(
@@ -105,6 +123,10 @@ def main():
         default="a painting of a virus monster playing guitar",
         help="the prompt to render"
     )
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/main
     parser.add_argument(
         "--outdir",
         type=str,
@@ -113,6 +135,7 @@ def main():
         default="outputs/txt2img-samples"
     )
     parser.add_argument(
+<<<<<<< HEAD
         "--skip_grid",
         action='store_true',
         help="do not save a grid, only individual samples. Helpful when evaluating lots of samples",
@@ -128,11 +151,20 @@ def main():
         default=50,
         help="number of ddim sampling steps",
     )
+=======
+        "--ddim_steps",
+        type=int,
+        default=200,
+        help="number of ddim sampling steps",
+    )
+
+>>>>>>> origin/main
     parser.add_argument(
         "--plms",
         action='store_true',
         help="use plms sampling",
     )
+<<<<<<< HEAD
     parser.add_argument(
         "--dpm_solver",
         action='store_true',
@@ -148,6 +180,9 @@ def main():
         action='store_true',
         help="if enabled, uses the same starting code across samples ",
     )
+=======
+
+>>>>>>> origin/main
     parser.add_argument(
         "--ddim_eta",
         type=float,
@@ -157,6 +192,7 @@ def main():
     parser.add_argument(
         "--n_iter",
         type=int,
+<<<<<<< HEAD
         default=2,
         help="sample this often",
     )
@@ -244,13 +280,55 @@ def main():
 
     config = OmegaConf.load(f"{opt.config}")
     model = load_model_from_config(config, f"{opt.ckpt}")
+=======
+        default=1,
+        help="sample this often",
+    )
+
+    parser.add_argument(
+        "--H",
+        type=int,
+        default=256,
+        help="image height, in pixel space",
+    )
+
+    parser.add_argument(
+        "--W",
+        type=int,
+        default=256,
+        help="image width, in pixel space",
+    )
+
+    parser.add_argument(
+        "--n_samples",
+        type=int,
+        default=4,
+        help="how many samples to produce for the given prompt",
+    )
+
+    parser.add_argument(
+        "--scale",
+        type=float,
+        default=5.0,
+        help="unconditional guidance scale: eps = eps(x, empty) + scale * (eps(x, cond) - eps(x, empty))",
+    )
+    opt = parser.parse_args()
+
+
+    config = OmegaConf.load("configs/latent-diffusion/txt2img-1p4B-eval.yaml")  # TODO: Optionally download from same location as ckpt and chnage this logic
+    model = load_model_from_config(config, "models/ldm/text2img-large/model.ckpt")  # TODO: check path
+>>>>>>> origin/main
 
     device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
     model = model.to(device)
 
+<<<<<<< HEAD
     if opt.dpm_solver:
         sampler = DPMSolverSampler(model)
     elif opt.plms:
+=======
+    if opt.plms:
+>>>>>>> origin/main
         sampler = PLMSSampler(model)
     else:
         sampler = DDIMSampler(model)
@@ -258,6 +336,7 @@ def main():
     os.makedirs(opt.outdir, exist_ok=True)
     outpath = opt.outdir
 
+<<<<<<< HEAD
     print("Creating invisible watermark encoder (see https://github.com/ShieldMnt/invisible-watermark)...")
     wm = "StableDiffusionV1"
     wm_encoder = WatermarkEncoder()
@@ -275,10 +354,15 @@ def main():
         with open(opt.from_file, "r") as f:
             data = f.read().splitlines()
             data = list(chunk(data, batch_size))
+=======
+    prompt = opt.prompt
+
+>>>>>>> origin/main
 
     sample_path = os.path.join(outpath, "samples")
     os.makedirs(sample_path, exist_ok=True)
     base_count = len(os.listdir(sample_path))
+<<<<<<< HEAD
     grid_count = len(os.listdir(outpath)) - 1
 
     start_code = None
@@ -350,3 +434,44 @@ def main():
 
 if __name__ == "__main__":
     main()
+=======
+
+    all_samples=list()
+    with torch.no_grad():
+        with model.ema_scope():
+            uc = None
+            if opt.scale != 1.0:
+                uc = model.get_learned_conditioning(opt.n_samples * [""])
+            for n in trange(opt.n_iter, desc="Sampling"):
+                c = model.get_learned_conditioning(opt.n_samples * [prompt])
+                shape = [4, opt.H//8, opt.W//8]
+                samples_ddim, _ = sampler.sample(S=opt.ddim_steps,
+                                                 conditioning=c,
+                                                 batch_size=opt.n_samples,
+                                                 shape=shape,
+                                                 verbose=False,
+                                                 unconditional_guidance_scale=opt.scale,
+                                                 unconditional_conditioning=uc,
+                                                 eta=opt.ddim_eta)
+
+                x_samples_ddim = model.decode_first_stage(samples_ddim)
+                x_samples_ddim = torch.clamp((x_samples_ddim+1.0)/2.0, min=0.0, max=1.0)
+
+                for x_sample in x_samples_ddim:
+                    x_sample = 255. * rearrange(x_sample.cpu().numpy(), 'c h w -> h w c')
+                    Image.fromarray(x_sample.astype(np.uint8)).save(os.path.join(sample_path, f"{base_count:04}.png"))
+                    base_count += 1
+                all_samples.append(x_samples_ddim)
+
+
+    # additionally, save as grid
+    grid = torch.stack(all_samples, 0)
+    grid = rearrange(grid, 'n b c h w -> (n b) c h w')
+    grid = make_grid(grid, nrow=opt.n_samples)
+
+    # to image
+    grid = 255. * rearrange(grid, 'c h w -> h w c').cpu().numpy()
+    Image.fromarray(grid.astype(np.uint8)).save(os.path.join(outpath, f'{prompt.replace(" ", "-")}.png'))
+
+    print(f"Your samples are ready and waiting four you here: \n{outpath} \nEnjoy.")
+>>>>>>> origin/main
