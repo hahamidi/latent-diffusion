@@ -1,3 +1,4 @@
+#CUDA_VISIBLE_DEVICES=0,1,2,3 python main.py --base configs/latent-diffusion/xray-ldm-kl-f8.yaml -t --gpus 0,1,2,3
 model:
   base_learning_rate: 1.0e-06
   target: ldm.models.diffusion.ddpm.LatentDiffusion
@@ -59,7 +60,7 @@ model:
           target: torch.nn.Identity
 
     cond_stage_config:
-      target: ldm.modules.encoders.modules.ClassEmbedder
+      target: ldm.modules.encoders.modules.MultiClassEmbedder
       params:
         embed_dim: 512
         key: class_label
@@ -67,7 +68,7 @@ model:
 data:
   target: main.DataModuleFromConfig
   params:
-    batch_size: 8
+    batch_size: 1
     num_workers: 28
     wrap: false
     train:
