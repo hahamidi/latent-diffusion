@@ -1,4 +1,4 @@
-#CUDA_VISIBLE_DEVICES=0,1,2,3 python main.py --base configs/latent-diffusion/xray-ldm-kl-f8.yaml -t --gpus 0,1,2,3
+#CUDA_VISIBLE_DEVICES=0,1,2,3 python main.py --base configs/latent-diffusion/xray-ldm-kl-f8.yaml -t --gpus 0,1,2,3 --resume /fs01/home/hhamidi/ldm3/2024-07-08T17-57-22_xray-ldm-kl-f8/checkpoints/last.ckpt
 model:
   base_learning_rate: 1.0e-06
   target: ldm.models.diffusion.ddpm.LatentDiffusion
@@ -68,7 +68,7 @@ model:
 data:
   target: main.DataModuleFromConfig
   params:
-    batch_size: 1
+    batch_size: 8
     num_workers: 28
     wrap: false
     train:
@@ -97,7 +97,7 @@ lightning:
     image_logger:
       target: main.ImageLogger
       params:
-        batch_frequency: 5000
+        batch_frequency: 1000
         max_images: 8
         increase_log_steps: False
 

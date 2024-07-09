@@ -13,6 +13,28 @@ from queue import Queue
 from inspect import isfunction
 from PIL import Image, ImageDraw, ImageFont
 
+def label_to_text(labels):
+    disease ={
+        0: "A",
+        1: "B",
+        2: "C",
+        3: "D",
+        4: "E",
+        5: "F",
+        6: "G",
+        7: "H",
+        8: "I",
+        9: "J",
+        10: "K",
+        11: "L",
+        12: "M",
+        13: "N",
+    }
+    # lables are [B,13] 0 or 1
+    # return a list of strings
+    return ["".join([disease[i] for i in range(13) if labels[bi][i] == 1]) for bi in range(len(labels))]
+
+
 
 def log_txt_as_img(wh, xc, size=10):
     # wh a tuple of (width, height)
